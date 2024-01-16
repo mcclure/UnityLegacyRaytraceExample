@@ -24,6 +24,7 @@ Shader "Unlit/RayShader"
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
+                float3 normal : NORMAL;
             };
 
             struct v2f
@@ -33,6 +34,7 @@ Shader "Unlit/RayShader"
                 float4 vertex : SV_POSITION;
                 float3 worldVertex : TEXCOORD1;
                 float3 worldCamera: TEXCOORD2;
+                float3 normal : TEXCOORD3;
             };
 
             sampler2D _MainTex;
@@ -45,6 +47,7 @@ Shader "Unlit/RayShader"
                 o.worldVertex = mul (unity_ObjectToWorld, v.vertex);
                 o.worldCamera = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.normal = v.normal;
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
