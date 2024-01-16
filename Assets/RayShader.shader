@@ -32,6 +32,7 @@ Shader "Unlit/RayShader"
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
                 float3 worldVertex : TEXCOORD1;
+                float3 worldCamera: TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -42,6 +43,7 @@ Shader "Unlit/RayShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.worldVertex = mul (unity_ObjectToWorld, v.vertex);
+                o.worldCamera = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
@@ -54,7 +56,8 @@ Shader "Unlit/RayShader"
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 //return col;
-                return float4(i.worldVertex.x, i.worldVertex.y, i.worldVertex.z, 1.0);
+                float3 offset = i.worldVertex - i.worldCamera;
+                return float4(offset, 1.0);
             }
             ENDCG
         }
