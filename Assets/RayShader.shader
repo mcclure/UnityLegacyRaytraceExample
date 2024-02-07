@@ -39,6 +39,7 @@ Shader "Unlit/RayShader"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            RaytracingAccelerationStructure rayStructure;
 
             v2f vert (appdata v)
             {
@@ -60,7 +61,10 @@ Shader "Unlit/RayShader"
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 //return col;
                 float3 offset = i.worldVertex - i.worldCamera;
-                return float4(offset, 1.0);
+                RayDesc ray;
+                // must create payload in its own .shader file here and include it from both
+                TraceRay(rayStructure, RAY_FLAG_NONE, 0xFF, 0, 1, 0, ray, payload);
+                return float4(payload.color);
             }
             ENDCG
         }
