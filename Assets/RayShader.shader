@@ -6,19 +6,27 @@ Shader "Unlit/RayShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque"  "LightMode" = "RayTracing" } // Lightmode = Raytracing taken from sample code; unclear if mandatory, or what it does
         LOD 100
         Cull off
 
         Pass
         {
             CGPROGRAM
+
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
             #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
+
+            // Note: d3d11 means "d3d11 or d3d12"
+            #pragma only_renderers d3d11 
+            #pragma require inlineraytracing
+            #include <UnityRayQuery.cginc>
+
+            #include "RayPayload.cginc"
 
             struct appdata
             {
@@ -63,8 +71,10 @@ Shader "Unlit/RayShader"
                 float3 offset = i.worldVertex - i.worldCamera;
                 RayDesc ray;
                 // must create payload in its own .shader file here and include it from both
+                RayPayload payload;// = {float4(1.0, 0.0, 0.0, 1.0) };
                 TraceRay(rayStructure, RAY_FLAG_NONE, 0xFF, 0, 1, 0, ray, payload);
                 return float4(payload.color);
+                //return float4(1.0,0.0,0.0,1.0);
             }
             ENDCG
         }

@@ -17,7 +17,10 @@ public class RayDriver : MonoBehaviour
         {
             Debug.Log("The RayTracing API is not supported by this GPU or by the current graphics API.");
         }
-
+        if (!SystemInfo.supportsInlineRayTracing)
+        {
+            Debug.Log("The \"Inline\" RayTracing API is not supported by this GPU or by the current graphics API.");
+        }
       /* // From IntersectionShaderTest
             RayTracingAccelerationStructure.RASSettings settings = new RayTracingAccelerationStructure.RASSettings();
             settings.rayTracingModeMask = RayTracingAccelerationStructure.RayTracingModeMask.Everything;
