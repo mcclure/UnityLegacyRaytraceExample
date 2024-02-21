@@ -6,7 +6,7 @@ Shader "Unlit/RayShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque"  "LightMode" = "RayTracing" } // Lightmode = Raytracing taken from sample code; unclear if mandatory, or what it does
+        Tags { "RenderType"="Opaque" } // Lightmode = Raytracing taken from sample code; unclear if mandatory, or what it does
         LOD 100
         Cull off
 
