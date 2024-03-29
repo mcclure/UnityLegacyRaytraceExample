@@ -1,4 +1,5 @@
 #define AUTOMATIC_RTAS
+#define RTAS_DEBUG_PRINTS
 
 using System.Collections;
 using System.Collections.Generic;
@@ -35,14 +36,18 @@ public class RayDriver : MonoBehaviour
         rayStructure = new RayTracingAccelerationStructure(settings);
 #if AUTOMATIC_RTAS
 #else
+#if RTAS_DEBUG_PRINTS
         Debug.Log("RTAS Count (about to build)" + rayStructure.GetInstanceCount());
+#endif
         foreach(Transform child in targetParent.transform) {
             Debug.Log(child);
             Renderer r = child.GetComponent<Renderer>();
             if (r != null) {
         		  rayStructure.AddInstance(r, new RayTracingSubMeshFlags[] {RayTracingSubMeshFlags.Enabled, RayTracingSubMeshFlags.ClosestHitOnly});
             }
+#if RTAS_DEBUG_PRINTS
             Debug.Log("RTAS Count (building) " + rayStructure.GetInstanceCount());
+#endif
     	//	Consider recurse on GetAllChildren(child.gameObject));
       	} 
 #endif
@@ -59,7 +64,9 @@ public class RayDriver : MonoBehaviour
 
     void OnPreRenderCallback(Camera cam)
     {
+#if RTAS_DEBUG_PRINTS
         Debug.Log("RTAS Count " + rayStructure.GetInstanceCount());
+#endif
         // TODO: In a later phase objects will move, so this will need rebuilding, but right now we could have done it just once and not bothered with UpdateInstanceTransform
 
         foreach(Transform child in targetParent.transform) {
