@@ -7,7 +7,6 @@ using UnityEngine.Rendering;
 public class RayDriver : MonoBehaviour
 {
     RayTracingAccelerationStructure rayStructure;
-    public RayTracingShader rayTracingShader;
     public GameObject targetParent;
 
     // Start is called before the first frame update
@@ -49,7 +48,7 @@ public class RayDriver : MonoBehaviour
 
     void OnPreRenderCallback(Camera cam)
     {
-        Debug.Log("Count " + rayStructure.GetInstanceCount());
+        //Debug.Log("Count " + rayStructure.GetInstanceCount());
         // TODO: In a later phase objects will move, so this will need rebuilding, but right now we could have done it just once and not bothered with UpdateInstanceTransform
 
         foreach(Transform child in targetParent.transform) {
@@ -62,10 +61,11 @@ public class RayDriver : MonoBehaviour
 
         CommandBuffer cmdBuffer = new CommandBuffer();
         cmdBuffer.BuildRayTracingAccelerationStructure(rayStructure);
-        cmdBuffer.SetRayTracingAccelerationStructure(rayTracingShader, Shader.PropertyToID("rayStructure"), rayStructure);
+        cmdBuffer.SetGlobalRayTracingAccelerationStructure(Shader.PropertyToID("rayStructure"), rayStructure);
         //cmdBuffer.SetRayTracingShaderPass(rayStructure); // Not used in inline
         Graphics.ExecuteCommandBuffer(cmdBuffer);
-        cmdBuffer.Release();    }
+        cmdBuffer.Release();
+    }
 
     private void ReleaseResources() {
       rayStructure?.Release();
