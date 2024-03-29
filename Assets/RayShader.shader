@@ -24,7 +24,7 @@ Shader "Unlit/RayShader"
             // Note: d3d11 means "d3d11 or d3d12"
             #pragma only_renderers d3d11 
             #pragma require inlineraytracing
-            #include <UnityRayQuery.cginc>
+            #include "UnityRayQuery.cginc"
 
             #include "RayPayload.cginc"
 

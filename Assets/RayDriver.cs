@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Experimental.Rendering;
+
 
 public class RayDriver : MonoBehaviour
 {
@@ -21,12 +21,11 @@ public class RayDriver : MonoBehaviour
         {
             Debug.Log("The \"Inline\" RayTracing API is not supported by this GPU or by the current graphics API.");
         }
-      /* // From IntersectionShaderTest
-            RayTracingAccelerationStructure.RASSettings settings = new RayTracingAccelerationStructure.RASSettings();
+      // From IntersectionShaderTest
+            RayTracingAccelerationStructure.Settings settings = new RayTracingAccelerationStructure.Settings();
             settings.rayTracingModeMask = RayTracingAccelerationStructure.RayTracingModeMask.Everything;
             settings.managementMode = RayTracingAccelerationStructure.ManagementMode.Manual;
             settings.layerMask = 255;
-        */
 
         rayStructure = new RayTracingAccelerationStructure();
         foreach(Transform child in targetParent.transform) {
