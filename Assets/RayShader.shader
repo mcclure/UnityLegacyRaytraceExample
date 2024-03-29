@@ -54,7 +54,7 @@ Shader "Unlit/RayShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.worldVertex = mul (unity_ObjectToWorld, v.vertex);
-                o.worldCamera = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
+                o.worldCamera = float4(_WorldSpaceCameraPos, 1.0);//mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.normal = v.normal;
                 UNITY_TRANSFER_FOG(o,o.vertex);
@@ -70,7 +70,7 @@ Shader "Unlit/RayShader"
                 //return col;
                 float3 offset = i.worldVertex - i.worldCamera;
                 RayDesc ray;
-                ray.Origin = i.worldCamera;
+                ray.Origin = i.worldVertex;
                 ray.TMin = 0;
                 ray.TMax = 1e20f;
                 ray.Direction = offset;
