@@ -1,8 +1,9 @@
+#define AUTOMATIC_RTAS
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-
 
 public class RayDriver : MonoBehaviour
 {
@@ -24,17 +25,27 @@ public class RayDriver : MonoBehaviour
       {
             RayTracingAccelerationStructure.Settings settings = new RayTracingAccelerationStructure.Settings();
             settings.rayTracingModeMask = RayTracingAccelerationStructure.RayTracingModeMask.Everything;
+#if AUTOMATIC_RTAS
             settings.managementMode = RayTracingAccelerationStructure.ManagementMode.Automatic; // Was .Manual in sample code
+#else
+            settings.managementMode = RayTracingAccelerationStructure.ManagementMode.Manual; // Was .Manual in sample code
+#endif
             settings.layerMask = 255;
 
         rayStructure = new RayTracingAccelerationStructure(settings);
+#if AUTOMATIC_RTAS
+#else
+        Debug.Log("RTAS Count (about to build)" + rayStructure.GetInstanceCount());
         foreach(Transform child in targetParent.transform) {
+            Debug.Log(child);
             Renderer r = child.GetComponent<Renderer>();
             if (r != null) {
         		  rayStructure.AddInstance(r, new RayTracingSubMeshFlags[] {RayTracingSubMeshFlags.Enabled, RayTracingSubMeshFlags.ClosestHitOnly});
             }
+            Debug.Log("RTAS Count (building) " + rayStructure.GetInstanceCount());
     	//	Consider recurse on GetAllChildren(child.gameObject));
-      	}
+      	} 
+#endif
       }
       Camera.onPreRender += OnPreRenderCallback; // FIXME: In a multicam setup, will this be called multiple times? That would be bad
       Debug.Log("LIVE");
@@ -48,7 +59,7 @@ public class RayDriver : MonoBehaviour
 
     void OnPreRenderCallback(Camera cam)
     {
-        //Debug.Log("Count " + rayStructure.GetInstanceCount());
+        Debug.Log("RTAS Count " + rayStructure.GetInstanceCount());
         // TODO: In a later phase objects will move, so this will need rebuilding, but right now we could have done it just once and not bothered with UpdateInstanceTransform
 
         foreach(Transform child in targetParent.transform) {
@@ -61,10 +72,11 @@ public class RayDriver : MonoBehaviour
 
         CommandBuffer cmdBuffer = new CommandBuffer();
         cmdBuffer.BuildRayTracingAccelerationStructure(rayStructure);
-        cmdBuffer.SetGlobalRayTracingAccelerationStructure(Shader.PropertyToID("rayStructure"), rayStructure);
+        cmdBuffer.SetGlobalRayTracingAccelerationStructure("rayStructure", rayStructure);
         //cmdBuffer.SetRayTracingShaderPass(rayStructure); // Not used in inline
         Graphics.ExecuteCommandBuffer(cmdBuffer);
         cmdBuffer.Release();
+        //Shader.SetGlobalRayTracingAccelerationStructure("rayStructure", rayStructure); // Alternative to doing it in buffer
     }
 
     private void ReleaseResources() {
