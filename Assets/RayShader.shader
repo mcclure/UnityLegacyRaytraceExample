@@ -6,7 +6,7 @@ Shader "Unlit/RayShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" } // Lightmode = Raytracing taken from sample code; unclear if mandatory, or what it does
+        Tags { "RenderType"="Opaque" } // Lightmode = Raytracing is seen in some sample code; unclear what it does, but it seems to break things
         LOD 100
         Cull off
 
@@ -75,12 +75,12 @@ Shader "Unlit/RayShader"
                 ray.TMax = 1e20f;
                 ray.Direction = offset;
 
-                // must create payload in its own .shader file here and include it from both
+                // Trace
                 UnityRayQuery<RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_CULL_BACK_FACING_TRIANGLES> query;
                 query.TraceRayInline(rayStructure, RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_CULL_BACK_FACING_TRIANGLES, 0xff, ray);
                 query.Proceed();
 
-                if (query.CommittedStatus())
+                if (query.CommittedStatus()) // == COMMITTED_TRIANGLE_HIT gives same results (nothing)
                 return float4(0.0,0.0,1.0,1.0);
                 //TraceRay(rayStructure, RAY_FLAG_NONE, 0xFF, 0, 1, 0, ray, payload);
                 else
