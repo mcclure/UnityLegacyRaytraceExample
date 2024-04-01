@@ -1,3 +1,4 @@
+// Please notice NO_SELF_REFLECT define below
 Shader "Unlit/RayShader"
 {
     Properties
@@ -28,7 +29,7 @@ Shader "Unlit/RayShader"
 
             #include "RayPayload.cginc"
 
-            //#define NO_SELF_REFLECT
+            #define NO_SELF_REFLECT
 
             struct appdata
             {

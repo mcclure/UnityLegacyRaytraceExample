@@ -31,6 +31,7 @@ SavedGamePlugin/ORBIS_Release/
 *.opensdf
 *.suo
 Photospheres/
+.vscode/
 /build
 /scratch
 /Scratch

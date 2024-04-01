@@ -1,5 +1,5 @@
 #define AUTOMATIC_RTAS
-#define RTAS_DEBUG_PRINTS
+// #define RTAS_DEBUG_PRINTS
 
 using System.Collections;
 using System.Collections.Generic;
