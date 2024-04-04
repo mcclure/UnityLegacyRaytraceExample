@@ -23,7 +23,7 @@ Shader "Unlit/RayShader"
             #include "UnityCG.cginc"
 
             // Note: d3d11 means "d3d11 or d3d12"
-            #pragma only_renderers d3d11 
+            #pragma only_renderers d3d11 playstation
             #pragma require inlineraytracing
             #include "UnityRayQuery.cginc"
 
@@ -59,18 +59,21 @@ Shader "Unlit/RayShader"
                 o.worldVertex = mul (unity_ObjectToWorld, v.vertex);
                 o.worldCamera = float4(_WorldSpaceCameraPos, 1.0);//mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0));
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.worldNormal = normalize(mul(unity_ObjectToWorld, v.normal) - mul(unity_ObjectToWorld, float3(0.0, 0.0, 0.0)));
+                o.worldNormal = normalize(
+                    (mul(unity_ObjectToWorld, float4(v.normal, 1.0)) - 
+                     mul(unity_ObjectToWorld, float4(0.0, 0.0, 0.0, 1.0))).xyz
+                );
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
-            float3 reflect(float3 v, float3 normal) {
+            float3 ray_reflect(float3 v, float3 normal) {
                 return -2*dot(v, normal)*normal + v;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float3 offset = reflect(i.worldVertex - i.worldCamera, i.worldNormal);
+                float3 offset = ray_reflect(i.worldVertex - i.worldCamera, i.worldNormal);
                 RayDesc ray;
                 ray.Origin = i.worldVertex;
 #ifdef NO_SELF_REFLECT
