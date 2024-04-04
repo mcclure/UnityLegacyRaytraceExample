@@ -29,7 +29,7 @@ Shader "Unlit/RayShader"
 
             #include "RayPayload.cginc"
 
-            #define NO_SELF_REFLECT
+            //#define NO_SELF_REFLECT
 
             struct appdata
             {

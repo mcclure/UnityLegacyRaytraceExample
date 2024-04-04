@@ -1,5 +1,5 @@
-#define AUTOMATIC_RTAS
-// #define RTAS_DEBUG_PRINTS
+//#define AUTOMATIC_RTAS
+//#define RTAS_DEBUG_PRINTS
 
 using System.Collections;
 using System.Collections.Generic;
@@ -43,7 +43,7 @@ public class RayDriver : MonoBehaviour
             Debug.Log(child);
             Renderer r = child.GetComponent<Renderer>();
             if (r != null) {
-        		  rayStructure.AddInstance(r, new RayTracingSubMeshFlags[] {RayTracingSubMeshFlags.Enabled, RayTracingSubMeshFlags.ClosestHitOnly});
+        		  rayStructure.AddInstance(r, new RayTracingSubMeshFlags[] {RayTracingSubMeshFlags.Enabled | RayTracingSubMeshFlags.ClosestHitOnly});
             }
 #if RTAS_DEBUG_PRINTS
             Debug.Log("RTAS Count (building) " + rayStructure.GetInstanceCount());
